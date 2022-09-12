@@ -19,7 +19,7 @@ const fetchDirs = async (item: TDirs) => {
   }
   const path = `${item?.path ? `${item?.path}/` : ""}${item.name}`;
   if (item.is_dir) {
-    dirs.value = await invoke("greet", {
+    dirs.value = await invoke("dir_lists", {
       name: path,
     });
   } else {
@@ -33,7 +33,7 @@ const goBack = async () => {
   content.value = "";
   let path = parentPath.value.split("/").filter((item) => item);
   const parent = path.splice(0, path.length - 1);
-  dirs.value = await invoke("greet", {
+  dirs.value = await invoke("dir_lists", {
     name: parent.length > 0 ? `${parent.join("/")}` : "",
   });
 };
