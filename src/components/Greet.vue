@@ -15,7 +15,7 @@ const content = ref("");
 const parentPath = ref("");
 
 const getShell = async () => {
-  const cmd = new Command("cmd", ["ls"]);
+  const cmd = new Command("powershell", ["git --version"]);
 
   cmd.on("close", (info) => {
     console.log("info:", info);
