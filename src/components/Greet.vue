@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watchEffect } from "vue";
 import { invoke } from "@tauri-apps/api/tauri";
+import { Command } from "@tauri-apps/api/shell";
 
 type TDirs = {
   name: string;
@@ -12,6 +13,33 @@ const dirs = ref<TDirs[]>([]);
 const content = ref("");
 
 const parentPath = ref("");
+
+const getShell = async () => {
+  const cmd = new Command("cmd", ["ls"]);
+
+  cmd.on("close", (info) => {
+    console.log("info:", info);
+  });
+
+  cmd.on("error", (err) => {
+    console.log("err:", err);
+  });
+
+  cmd.stderr.on("data", (line) => {
+    console.log(line);
+  });
+
+  cmd.stdout.on("data", (line) => {
+    console.log(line);
+  });
+
+  try {
+    await cmd.spawn();
+  } catch (e) {
+    console.log("e", e);
+  }
+  console.log(cmd);
+};
 
 const fetchDirs = async (item: TDirs) => {
   if (item?.path.startsWith("/")) {
@@ -54,6 +82,7 @@ onMounted(() => {
 </script>
 
 <template>
+  <button @click="getShell">shell</button>
   <button @click="goBack">返回</button>
   <div>{{ parentPath }}</div>
   <template v-if="!content">
