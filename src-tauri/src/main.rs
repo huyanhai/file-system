@@ -3,22 +3,26 @@
     windows_subsystem = "windows"
 )]
 
-mod files;
+use tauri::Manager;
+use window::WindowExt;
+
+mod window;
+
+use window::ToolbarThickness;
 
 #[tauri::command]
-fn dir_lists(name: &str) -> Vec<files::PathInfo> {
-    let result = files::dir_lists(name);
-    return result;
-}
-
-#[tauri::command]
-fn content(path: &str) -> String {
-    return files::file_content(path);
+fn content() -> String {
+    return String::from("test");
 }
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![dir_lists, content])
+        .setup(|app| {
+            let window = app.get_window("main").unwrap();
+            window.set_transparent_titlebar(ToolbarThickness::Thick);
+            Ok(())
+        })
+        .invoke_handler(tauri::generate_handler![content])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

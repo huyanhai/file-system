@@ -66,8 +66,11 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "tauri",
-        "width": 800
+        "width": 800,
+        "maxWidth": 1000,
+        "maxHeight": 800,
+        "minWidth": 800,
+        "minHeight": 600
       }
     ]
   }

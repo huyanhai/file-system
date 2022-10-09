@@ -1,0 +1,8 @@
+html,
+body {
+  @apply tw-w-full tw-h-full tw-p-0 tw-m-0 tw-font-sans;
+}
+
+#app {
+  @apply tw-w-full tw-h-full tw-bg-black/[0.04];
+}
