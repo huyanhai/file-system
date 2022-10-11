@@ -1,16 +1,25 @@
 export const routes = [
   {
-    path: "/",
-    name: "Home",
-    component: () => import("@/views/home/Index.vue"),
+    path: "/pic",
+    name: "Pic",
+    component: () => import("@/views/pic/Index.vue"),
     meta: {
-      title: "首页",
+      title: "图片",
       keepAlive: true,
     },
   },
   {
-    path: "/pic",
-    name: "Pic",
+    path: "/video",
+    name: "Video",
+    component: () => import("@/views/pic/Index.vue"),
+    meta: {
+      title: "图片",
+      keepAlive: true,
+    },
+  },
+  {
+    path: "/book",
+    name: "Book",
     component: () => import("@/views/pic/Index.vue"),
     meta: {
       title: "图片",

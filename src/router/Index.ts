@@ -9,6 +9,7 @@ export const router = createRouter({
       component: () => import("@/layout/Index.vue"),
       children: routes,
       path: "/",
+      redirect: "/pic",
     },
   ],
   strict: true, // 禁用尾部的斜线

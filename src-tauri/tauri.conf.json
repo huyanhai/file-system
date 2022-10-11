@@ -64,13 +64,12 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
+        "height": 800,
         "resizable": true,
-        "width": 800,
-        "maxWidth": 1000,
-        "maxHeight": 800,
-        "minWidth": 800,
-        "minHeight": 600
+        "width": 1000,
+        "title": "",
+        "fileDropEnabled": false,
+        "url": "/pic"
       }
     ]
   }

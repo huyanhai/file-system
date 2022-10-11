@@ -1,4 +1,5 @@
 import { createApp } from "vue";
+import "virtual:svg-icons-register";
 
 import { setupRouter, router } from "@/router";
 import { setupRouterGuard } from "@/router/guard";

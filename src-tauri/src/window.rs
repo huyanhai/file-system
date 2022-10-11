@@ -1,53 +1,26 @@
-use tauri::{Runtime, Window};
-
 #[allow(dead_code)]
 pub enum ToolbarThickness {
     Thick,
     Medium,
     Thin,
 }
+use tauri::{Runtime, Window};
 
 pub trait WindowExt {
     #[cfg(target_os = "macos")]
-    fn set_transparent_titlebar(&self, thickness: ToolbarThickness);
+    fn set_transparent_titlebar(&self);
 }
 
 impl<R: Runtime> WindowExt for Window<R> {
     #[cfg(target_os = "macos")]
-    fn set_transparent_titlebar(&self, thickness: ToolbarThickness) {
-        use cocoa::appkit::{NSWindow, NSWindowTitleVisibility};
+    fn set_transparent_titlebar(&self) {
+        use cocoa::{appkit::NSWindow, base::YES};
 
         unsafe {
             let id = self.ns_window().unwrap() as cocoa::base::id;
 
-            println!("NSWindow:{:?}", id);
-
-            id.setTitlebarAppearsTransparent_(cocoa::base::YES);
-
-            match thickness {
-                ToolbarThickness::Thick => {
-                    self.set_title("").expect("Title wasn't set to ''");
-                    make_toolbar(id);
-                }
-                ToolbarThickness::Medium => {
-                    id.setTitleVisibility_(NSWindowTitleVisibility::NSWindowTitleHidden);
-                    make_toolbar(id);
-                }
-                ToolbarThickness::Thin => {
-                    id.setTitleVisibility_(NSWindowTitleVisibility::NSWindowTitleHidden);
-                }
-            }
+            id.setTitlebarAppearsTransparent_(YES);
+            // id.setMovableByWindowBackground_(YES);
         }
     }
-}
-
-#[cfg(target_os = "macos")]
-unsafe fn make_toolbar(id: cocoa::base::id) {
-    use cocoa::appkit::{NSTabViewItem, NSToolbar, NSWindow};
-    use objc::msg_send;
-
-    let new_toolbar = NSToolbar::alloc(id);
-    // new_toolbar.setView_(id);
-    new_toolbar.init_();
-    id.setToolbar_(new_toolbar);
 }
