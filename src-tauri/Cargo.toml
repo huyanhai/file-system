@@ -20,8 +20,8 @@ tauri = { version = "1.0.0", features = ["api-all"] }
 
 [target.'cfg(target_os = "macos")'.dependencies]
 cocoa = "0.24.0"
-image = "0.24.4"
-# news = {path="./news"}
+image = "^0.22"
+imager = {path="./imager"}
 
 [features]
 # by default Tauri runs in production mode

@@ -26,6 +26,18 @@
             "name": "node"
           }
         ]
+      },
+      "fs": {
+        "all": true,
+        "copyFile": true,
+        "createDir": true,
+        "readDir": true,
+        "readFile": true,
+        "removeDir": true,
+        "removeFile": true,
+        "renameFile": true,
+        "scope": ["*"],
+        "writeFile": true
       }
     },
     "bundle": {
