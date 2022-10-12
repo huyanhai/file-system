@@ -10,6 +10,8 @@ use window::WindowExt;
 mod images;
 mod window;
 
+pub mod img;
+
 #[tauri::command]
 fn save_img(buffer: HashMap<String, Vec<u8>>) -> Vec<u8> {
     let buf = match buffer.get("name") {
