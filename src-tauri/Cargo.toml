@@ -23,6 +23,7 @@ exoquant = "0.2.0"
 lodepng = "2.5.0"
 # imager = {path="./imager"}
 libc = "^0.2"
+reqwest = "0.11.12"
 
 [target.'cfg(target_os = "macos")'.dependencies]
 cocoa = "0.24.0"

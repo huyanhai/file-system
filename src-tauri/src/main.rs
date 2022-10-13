@@ -8,6 +8,7 @@ use std::collections::HashMap;
 use tauri::Manager;
 use window::WindowExt;
 
+mod download;
 mod imager;
 mod window;
 
@@ -29,6 +30,11 @@ fn save_img(buffer: HashMap<String, Vec<u8>>, ext: u8) -> Vec<u8> {
     imager::save_img(buf, format)
 }
 
+#[tauri::command]
+async fn down(url: String) -> Result<String, String> {
+    download::download(url).await
+}
+
 fn main() {
     tauri::Builder::default()
         .setup(|app| {
@@ -36,7 +42,7 @@ fn main() {
             window.set_transparent_titlebar();
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![save_img])
+        .invoke_handler(tauri::generate_handler![save_img, down])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

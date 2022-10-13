@@ -4,6 +4,9 @@
   </label>
   <textarea v-model="url"></textarea>
   <img :src="url" class="tw-w-20 tw-h-20 tw-block" alt="" />
+
+  <input type="text" v-model="video" />
+  <button @click="downloadVideo">下载</button>
 </template>
 <script lang="ts" setup>
 import { ref } from "vue";
@@ -12,6 +15,11 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { writeBinaryFile, BaseDirectory } from "@tauri-apps/api/fs";
 
 const url = ref();
+const video = ref();
+
+const downloadVideo = async () => {
+  await invoke("down", { url: video.value });
+};
 
 const downLoad = (blob: Blob) => {
   const link = document.createElement("a");
