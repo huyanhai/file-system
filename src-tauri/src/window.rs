@@ -1,9 +1,4 @@
 #[allow(dead_code)]
-pub enum ToolbarThickness {
-    Thick,
-    Medium,
-    Thin,
-}
 use tauri::{Runtime, Window};
 
 pub trait WindowExt {

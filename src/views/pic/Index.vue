@@ -7,6 +7,7 @@
 </template>
 <script lang="ts" setup>
 import { ref } from "vue";
+import { imgExt } from "@/constants/images";
 import { invoke } from "@tauri-apps/api/tauri";
 import { writeBinaryFile, BaseDirectory } from "@tauri-apps/api/fs";
 
@@ -25,23 +26,25 @@ const downLoad = (blob: Blob) => {
 const fileChange = async (e: any) => {
   const file = e.target.files[0];
   const reader = new FileReader();
+  const ext = file.type.split("/")[1];
+  const type = imgExt[ext];
 
   reader.readAsArrayBuffer(file);
 
   reader.onload = async () => {
     const u8 = new Uint8Array(reader.result);
     const info = await invoke("save_img", {
-      buffer: { name: Array.from(u8) },
+      buffer: { source: Array.from(u8) },
+      ext: type,
     });
     let blob = new Blob([new Uint8Array(info).buffer]);
-    console.log(new Uint8Array(info).buffer.byteLength, u8.buffer.byteLength);
     let r1 = new FileReader();
     r1.readAsDataURL(blob);
     r1.onload = () => {
       url.value = r1.result;
     };
 
-    await writeBinaryFile("xxx.jpeg", new Uint8Array(info), { dir: BaseDirectory.Download });
+    await writeBinaryFile(`xxx.${ext}`, new Uint8Array(info), { dir: BaseDirectory.Download });
   };
 };
 </script>

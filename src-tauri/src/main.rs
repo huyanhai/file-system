@@ -3,22 +3,30 @@
     windows_subsystem = "windows"
 )]
 
+use image::ImageFormat;
 use std::collections::HashMap;
 use tauri::Manager;
 use window::WindowExt;
 
-mod images;
+mod imager;
 mod window;
 
 pub mod img;
 
 #[tauri::command]
-fn save_img(buffer: HashMap<String, Vec<u8>>) -> Vec<u8> {
-    let buf = match buffer.get("name") {
+fn save_img(buffer: HashMap<String, Vec<u8>>, ext: u8) -> Vec<u8> {
+    let buf = match buffer.get("source") {
         Some(buffer) => buffer,
         _ => panic!(""),
     };
-    images::save_img(buf)
+
+    let format = match ext {
+        1 => ImageFormat::Jpeg,
+        2 => ImageFormat::WebP,
+        _ => ImageFormat::Png,
+    };
+
+    imager::save_img(buf, format)
 }
 
 fn main() {

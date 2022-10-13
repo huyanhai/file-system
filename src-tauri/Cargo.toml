@@ -19,6 +19,8 @@ serde = { version = "1.0", features = ["derive"] }
 tauri = { version = "1.0.0", features = ["api-all"] }
 image = "0.24.4"
 mozjpeg-sys = "^0.10"
+exoquant = "0.2.0"
+lodepng = "2.5.0"
 # imager = {path="./imager"}
 libc = "^0.2"
 

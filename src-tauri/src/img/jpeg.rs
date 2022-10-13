@@ -1,6 +1,8 @@
-use image::{load_from_memory_with_format, DynamicImage, GenericImageView, ImageFormat};
+use image::{DynamicImage, GenericImageView};
 
 use libc;
+
+// copy as https://github.com/imager-io/imager/blob/244df6721db203ba04d28391318395e9f195bf6d/imager/src/codec/jpeg.rs#L43
 
 #[allow(non_snake_case)]
 const TRUE: mozjpeg_sys::boolean = true as mozjpeg_sys::boolean;
@@ -10,7 +12,7 @@ const FALSE: mozjpeg_sys::boolean = false as mozjpeg_sys::boolean;
 const COLOR_SPACE: mozjpeg_sys::J_COLOR_SPACE = mozjpeg_sys::J_COLOR_SPACE::JCS_RGB;
 const COLOR_SPACE_COMPONENTS: libc::c_int = 3 as libc::c_int;
 
-pub unsafe fn encode(source: &DynamicImage, quality: u8) -> Vec<u8> {
+pub unsafe fn compress(source: &DynamicImage, quality: u8) -> Vec<u8> {
     ///////////////////////////////////////////////////////////////////////////
     // INPUT
     ///////////////////////////////////////////////////////////////////////////
