@@ -41,7 +41,7 @@ fn encode_indexed(palette: &[Color], image: &[u8], width: u32, height: u32) -> V
         .expect("encode png data")
 }
 
-pub fn compress(source: &DynamicImage, mode: ImageMode, num_colors: usize) -> Vec<u8> {
+pub fn compress(source: &DynamicImage) -> Vec<u8> {
     let input_pixels = source
         .pixels()
         .map(|(_, _, px)| Color::new(px.0[0], px.0[1], px.0[2], px.0[3]))

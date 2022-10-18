@@ -80,8 +80,8 @@
         "resizable": true,
         "width": 1000,
         "title": "",
-        "fileDropEnabled": false,
-        "url": "/pic"
+        "url": "/pic",
+        "fileDropEnabled": false
       }
     ]
   }

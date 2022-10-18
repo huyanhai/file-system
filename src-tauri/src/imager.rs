@@ -8,7 +8,7 @@ pub fn save_img(buf: &Vec<u8>, format: ImageFormat) -> Vec<u8> {
 
     let buffer = match format {
         ImageFormat::Jpeg => unsafe { jpeg::compress(&img, 80) },
-        _ => png::compress(&img, png::ImageMode::Text, 250),
+        _ => png::compress(&img),
     };
 
     buffer

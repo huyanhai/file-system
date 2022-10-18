@@ -1,18 +1,113 @@
 <template>
-  <label>
-    <input type="file" @change="fileChange" />
-  </label>
-  <textarea v-model="url"></textarea>
-  <img :src="url" class="tw-w-20 tw-h-20 tw-block" alt="" />
-
-  <input type="text" v-model="video" />
-  <button @click="downloadVideo">下载</button>
+  <div class="tw-h-full" id="dropDom" ref="dropDom" @drop="drop" @dragover="dragover">
+    <div v-for="item in fileArr" class="tw-flex tw-items-center">
+      <div class="tw-w-10 tw-h-10 tw-flex tw-items-center tw-justify-center">
+        <img class="tw-flex tw-max-w-full tw-max-h-full" :src="item.base64" alt="" />
+      </div>
+      <p class="tw-text-xs tw-m-0 tw-w-1/4 tw-mx-2 tw-overflow-hidden tw-whitespace-nowrap tw-text-ellipsis">{{ item.name }}</p>
+      <p class="tw-m-0 tw-text-xs tw-w-10 tw-text-right">{{ item.size / 1000 > 1 ? `${Math.ceil(item.size / 1000)}kb` : `${item.size % 1000}b` }}</p>
+      <div class="tw-w-1/3 tw-mx-2">
+        <a-progress :percent="100" :status="item.byteLength ? 'success' : 'active'" :show-info="false" />
+      </div>
+      <p class="tw-m-0 tw-text-xs tw-w-5" v-if="item.byteLength">{{ item.byteLength / 1000 > 1 ? `${Math.ceil(item.byteLength / 1000)}kb` : `${item.byteLength % 1000}b` }}</p>
+      <p class="tw-m-0 tw-text-xs tw-ml-4 tw-w-10 tw-text-right" v-if="item.byteLength">{{ Math.ceil((1 - item.byteLength / item.size) * 100) }}%</p>
+      <a @click="download(item)">下载</a>
+    </div>
+  </div>
 </template>
 <script lang="ts" setup>
 import { ref } from "vue";
 import { imgExt } from "@/constants/images";
 import { invoke } from "@tauri-apps/api/tauri";
+import { save } from "@tauri-apps/api/dialog";
+import { sep } from "@tauri-apps/api/path";
 import { writeBinaryFile, BaseDirectory } from "@tauri-apps/api/fs";
+
+interface fileInfo {
+  file: File;
+  base64: string;
+  buffer: Uint8Array;
+  ext: number;
+  size: number;
+  name: string;
+  type: number;
+  byteLength: number;
+}
+
+const fileArr = ref<{
+  [key: string]: fileInfo;
+}>({});
+
+const readAsArrayBuffer = (file: File, type: number) => {
+  const reader = new FileReader();
+  reader.readAsArrayBuffer(file);
+  return new Promise((resolve) => {
+    reader.onload = async () => {
+      const u8 = new Uint8Array(reader.result as ArrayBuffer);
+      const info = await invoke("save_img", {
+        buffer: { source: Array.from(u8) },
+        ext: type,
+      });
+
+      resolve(new Uint8Array(info));
+    };
+  });
+};
+
+const readAsDataURL = (file: File) => {
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+  return new Promise((resolve) => {
+    reader.onload = async () => {
+      resolve(reader.result);
+    };
+  });
+};
+
+const dragover = (e: DragEvent) => {
+  e.preventDefault();
+};
+
+const drop = async (e: DragEvent) => {
+  e.stopPropagation();
+  e.preventDefault();
+
+  let files = e.dataTransfer?.files;
+
+  for (const file of files) {
+    const ext = file.type.split("/")[1];
+    const type = imgExt[ext];
+    const base64 = (await readAsDataURL(file)) as string;
+    fileArr.value[file.name] = {
+      file,
+      ext,
+      base64,
+      size: file.size,
+      name: file.name,
+      type,
+    };
+  }
+
+  for (const item in fileArr.value) {
+    const info = fileArr.value[item];
+    const bufferArray = (await readAsArrayBuffer(info.file, info.type)) as Uint8Array;
+    const buffer = new Uint8Array(bufferArray);
+    fileArr.value[item].buffer = buffer;
+    fileArr.value[item].byteLength = buffer.byteLength;
+  }
+};
+
+const download = async (info: fileInfo) => {
+  const dir = await save();
+  if (dir) {
+    const dirArr = dir.split(sep);
+    dirArr.pop();
+    await writeBinaryFile({
+      contents: info.buffer,
+      path: `${dirArr.join(sep)}${sep}${info.name}`,
+    });
+  }
+};
 
 const url = ref();
 const video = ref();
